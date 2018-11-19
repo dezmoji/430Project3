@@ -1,0 +1,95 @@
+// imports
+@import "node_modules/bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css?family=Merriweather|Roboto');
+
+// variables
+$screenWidth: 100vw;
+$borderColor: rgba(255, 255, 255, 0.336);
+$textColor: rgba(0,0,0,1); 
+$warningColor: rgba(240, 128, 128, 0.699);
+$titleFontFamily: 'Merriweather', 'Times New Roman', serif;
+$fontFamily: 'Roboto', 'Arial', sans-serif;
+
+// styles
+body{
+    background-color: lightblue;
+    color: $textColor;
+    font-family: $fontFamily;
+};
+
+img{
+    width: $screenWidth / 1.5;
+    height: auto;
+    margin: 1% auto;
+    padding: auto;
+};
+
+.navbar-brand{
+    color: white;
+};
+
+.mainForm {
+    padding: 3% auto;
+    margin: 3% auto;
+};
+
+#content{
+    background-color: $borderColor;
+    width: $screenWidth / 1.5;
+    height: auto;
+    margin: 1% auto;
+    padding: 3% auto;
+    border: 1px solid $borderColor;
+    border-radius: 10px;
+};
+
+.post{
+    position: relative;
+    width: 90%;
+    margin: 2% auto;
+    padding: 2%;
+    border: 1px solid darkcyan;
+};
+
+.postTitle{
+    font-family: $titleFontFamily;
+    margin-top: 0;
+    margin-bottom: 1%;
+};
+
+.postLink a{
+    text-decoration: none;
+    color: $textColor;
+};
+
+.postLink a:hover {
+    text-decoration: none;
+    color: $textColor;
+};
+
+.post p{
+    margin-top: 1%;
+    margin-bottom: 1%;
+};
+
+#error{
+    position: fixed;
+    z-index: 2;
+    top:0;
+    height: 2%;
+    width: 100%;
+};
+
+.mainForm {
+    margin: auto;
+    padding: auto;
+};
+
+.mainForm button{
+    margin: 0 auto 2% auto;
+    padding: auto;
+};
+
+.form-group{
+    margin: 1% auto 2% auto;
+};

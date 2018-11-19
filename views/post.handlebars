@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Fumblr</title>
+  <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+  <script crossorigin src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/assets/main.css"/>
+</head>
+<body>
+     <nav class="navbar navbar-expand-lg bg-dark">
+        <a class="navbar-brand" href="/dashboard"><b>Fumblr</b></a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" id="dashButton" href="/dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="postButton" href="/addPost">Add Post</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="accountButton" href="/changePass">Change Password</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="logoutButton" href="/logout">Logout</a>
+            </li>   
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="row"> <div id="content" class="col-9"> </div> </div>
+        <div class="row"><img class="col-9" src="/assets/img/pokemonad.jpg" alt="Ad" /> </div>
+        
+    </div>
+    <div id="error"></div>
+    <script src="/assets/postBundle.js"></script>
+</body>
+</html>
