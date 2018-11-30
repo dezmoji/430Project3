@@ -25,7 +25,7 @@ const UserPosts = (props) =>{
     // return the posts
     return (
         <div>
-            <h3>Posts created by: </h3>
+            <h3>Posts created by: {props.createdBy}</h3>
             <div className="postList">
              {postNodes}
             </div>
@@ -42,7 +42,7 @@ const setup = (csrf) =>{
 
     sendAjax('GET', '/getUserPosts', query, (data) =>{
         ReactDOM.render(
-            <UserPosts posts={data.posts} csrf={csrf}/>, document.querySelector("#content")
+            <UserPosts posts={data.posts} csrf={csrf} createdBy={data.createdBy}/>, document.querySelector("#content")
         );
     });
 };

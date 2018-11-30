@@ -55,7 +55,8 @@ var UserPosts = function UserPosts(props) {
         React.createElement(
             "h3",
             null,
-            "Posts created by: "
+            "Posts created by: ",
+            props.createdBy
         ),
         React.createElement(
             "div",
@@ -73,7 +74,7 @@ var setup = function setup(csrf) {
     console.log('hit');
 
     sendAjax('GET', '/getUserPosts', query, function (data) {
-        ReactDOM.render(React.createElement(UserPosts, { posts: data.posts, csrf: csrf }), document.querySelector("#content"));
+        ReactDOM.render(React.createElement(UserPosts, { posts: data.posts, csrf: csrf, createdBy: data.createdBy }), document.querySelector("#content"));
     });
 };
 var AlertWindow = function AlertWindow(props) {

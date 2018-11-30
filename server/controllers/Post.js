@@ -89,10 +89,7 @@ const userPosts = (request, response) => {
       return res.status(400).json({ error: 'An error occured' });
     }
 
-    console.log(docs[0].createdBy);
-    console.log(docs.createdBy);
-
-    return res.json({ posts: docs, userID: req.session.account._id });
+    return res.json({ posts: docs, userID: req.session.account._id, createdBy: docs[0].createdBy });
   });
 };
 
