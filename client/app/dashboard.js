@@ -11,13 +11,13 @@ const PostList = (props) =>{
 
     // set up post
     const postNodes = props.posts.map(function(post){
-        // append the post id to the url
-        // this allows for users to click on specific posts to view them in full 
+        // append id's to thr url's 
         const postURL = "/showPost?postID=" + post._id;
+        const userURL = "/showUser?user=" + post.createdBy;
         return (
             <div key={post._id} className="post">
                 <h3 className="postTitle"><b>{post.title}</b></h3>
-                <h5 className="postCreator">Created by: {post.createdBy}</h5>
+                <h5 className="postCreator">Created by: <a className="userLink" href={userURL}>{post.createdBy}</a></h5>
                 <p className="postDesc"><i>{post.description}</i></p>
                 <a className="postLink" href={postURL}>Read more...</a>
             </div>

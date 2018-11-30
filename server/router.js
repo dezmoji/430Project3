@@ -11,7 +11,11 @@ const router = (app) => {
   app.get('/changePass', mid.requiresSecure, mid.requiresLogin, controllers.Account.passPage);
   app.get('/getPosts', mid.requiresSecure, mid.requiresLogin, controllers.Post.getPosts);
   app.get('/showPost', mid.requiresSecure, mid.requiresLogin, controllers.Post.postPage);
+  app.get('/showUser', mid.requiresSecure, mid.requiresLogin, controllers.Account.userPage);
+  app.get('/showUserPosts', mid.requiresSecure, mid.requiresLogin, controllers.Post.userPostPage);
   app.get('/getPost', mid.requiresSecure, mid.requiresLogin, controllers.Post.getPost);
+  app.get('/getUser', mid.requiresSecure, mid.requiresLogin, controllers.Account.getUser);
+  app.get('/getUserPosts', mid.requiresSecure, mid.requiresLogin, controllers.Post.userPosts);
   app.get('/logout', mid.requiresSecure, mid.requiresLogin, controllers.Account.logout);
   app.post('/addPost', mid.requiresSecure, mid.requiresLogin, controllers.Post.addPost);
   app.put('/editPost', mid.requiresSecure, mid.requiresLogin, controllers.Post.updatePost);

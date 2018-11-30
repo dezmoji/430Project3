@@ -29,12 +29,14 @@ const ShowPost = (props) => {
             </div>)
     }
 
+    const userURL = "/showUser?user=" + props.post.createdBy;
+
     // if the user is the owner of the post, give them the option to edit the post
     if(props.post.ownerID === props.id){
         return( 
             <div className="post">
                 <h3 className="postTitle">{props.post.title}</h3>
-                <h5 className="postCreator">Created by: {props.post.createdBy}</h5>
+                <h5 className="postCreator">Created by: <a className="userLink" href={userURL}>{props.post.createdBy}</a></h5>
                 <p className="postDesc"><i>{props.post.description}</i></p>
                 <p className="postBody">{props.post.body}</p>
                 <button type="button" className="btn btn-primary btn-lg btn-block" onClick={(e) => {createEditPostWindow(props)}}>Edit Post</button>
@@ -46,7 +48,7 @@ const ShowPost = (props) => {
         return(
             <div className="post">
                 <h3 className="postTitle">{props.post.title}</h3>
-                <h5 className="postCreator">Created by: {props.post.createdBy}</h5>
+                <h5 className="postCreator">Created by: <a className="userLink" href={userURL}>{props.post.createdBy}</a></h5>
                 <p className="postDesc"><i>{props.post.description}</i></p>
                 <p className="postBody">{props.post.body}</p>
                 <p></p>

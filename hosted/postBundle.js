@@ -36,6 +36,8 @@ var ShowPost = function ShowPost(props) {
         );
     }
 
+    var userURL = "/showUser?user=" + props.post.createdBy;
+
     // if the user is the owner of the post, give them the option to edit the post
     if (props.post.ownerID === props.id) {
         return React.createElement(
@@ -50,7 +52,11 @@ var ShowPost = function ShowPost(props) {
                 "h5",
                 { className: "postCreator" },
                 "Created by: ",
-                props.post.createdBy
+                React.createElement(
+                    "a",
+                    { className: "userLink", href: userURL },
+                    props.post.createdBy
+                )
             ),
             React.createElement(
                 "p",
@@ -89,7 +95,11 @@ var ShowPost = function ShowPost(props) {
                     "h5",
                     { className: "postCreator" },
                     "Created by: ",
-                    props.post.createdBy
+                    React.createElement(
+                        "a",
+                        { className: "userLink", href: userURL },
+                        props.post.createdBy
+                    )
                 ),
                 React.createElement(
                     "p",

@@ -12,6 +12,11 @@ const passPage = (req, res) => {
   res.render('changepass', { csrfToken: req.csrfToken() });
 };
 
+// renders the user handlebar view
+const userPage = (req, res) => {
+  res.render('user', { csrfToken: req.csrfToken() });
+};
+
 // destroy the current session and go to login page
 const logout = (req, res) => {
   req.session.destroy();
@@ -133,6 +138,20 @@ const changePassword = (request, response) => {
   });
 };
 
+//
+const getUser = (request, response) => {
+  const req = request;
+  const res = response;
+
+  return Account.AccountModel.findByUsername(req.query.user, (err, doc) => {
+    if (err) {
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    return res.json({ user: doc, userID: req.session.account._id });
+  });
+};
+
 //  get a csrf token
 const getToken = (request, response) => {
   const req = request;
@@ -147,8 +166,10 @@ const getToken = (request, response) => {
 
 module.exports.loginPage = loginPage;
 module.exports.passPage = passPage;
+module.exports.userPage = userPage;
 module.exports.login = login;
 module.exports.changePass = changePassword;
+module.exports.getUser = getUser;
 module.exports.logout = logout;
 module.exports.signup = signup;
 module.exports.getToken = getToken;

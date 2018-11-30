@@ -16,6 +16,13 @@ const AccountSchema = new mongoose.Schema({
     unique: true,
     match: /^[A-Za-z0-9_\-.]{1,16}$/,
   },
+
+  about: {
+    type: String,
+    required: false,
+    trim: true,
+    default: 'User has not filled out their about section yet.',
+  },
   salt: {
     type: Buffer,
     required: true,
@@ -33,6 +40,7 @@ const AccountSchema = new mongoose.Schema({
 // format how data is sent to the client
 AccountSchema.statics.toAPI = doc => ({
   username: doc.username,
+  about: doc.about,
   _id: doc._id,
 });
 

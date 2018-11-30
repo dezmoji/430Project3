@@ -1,7 +1,7 @@
 "use strict";
 
-// List all posts
-var PostList = function PostList(props) {
+// React view for user
+var UserPosts = function UserPosts(props) {
     // if there are no posts
     if (props.posts.length === 0) {
         return React.createElement(
@@ -19,7 +19,6 @@ var PostList = function PostList(props) {
     var postNodes = props.posts.map(function (post) {
         // append id's to thr url's 
         var postURL = "/showPost?postID=" + post._id;
-        var userURL = "/showUser?user=" + post.createdBy;
         return React.createElement(
             "div",
             { key: post._id, className: "post" },
@@ -30,16 +29,6 @@ var PostList = function PostList(props) {
                     "b",
                     null,
                     post.title
-                )
-            ),
-            React.createElement(
-                "h5",
-                { className: "postCreator" },
-                "Created by: ",
-                React.createElement(
-                    "a",
-                    { className: "userLink", href: userURL },
-                    post.createdBy
                 )
             ),
             React.createElement(
@@ -62,26 +51,31 @@ var PostList = function PostList(props) {
     // return the posts
     return React.createElement(
         "div",
-        { className: "postList" },
-        postNodes
+        null,
+        React.createElement(
+            "h3",
+            null,
+            "Posts created by: "
+        ),
+        React.createElement(
+            "div",
+            { className: "postList" },
+            postNodes
+        )
     );
 };
 
-// loads all the posts from the server
-var loadPostsFromServer = function loadPostsFromServer(csrf) {
-    sendAjax('GET', '/getPosts', null, function (data) {
-        ReactDOM.render(React.createElement(PostList, { posts: data.posts, csrf: csrf, id: data.userID }), document.querySelector("#content"));
+// 
+var setup = function setup(csrf) {
+    // get query from the url and remove the "?"
+    var query = window.location.search.slice(1);
+
+    console.log('hit');
+
+    sendAjax('GET', '/getUserPosts', query, function (data) {
+        ReactDOM.render(React.createElement(UserPosts, { posts: data.posts, csrf: csrf }), document.querySelector("#content"));
     });
 };
-
-// set up method called after page loads
-var setup = function setup(csrf) {
-    ReactDOM.render(React.createElement(PostList, { posts: [], csrf: csrf, id: -1 }), document.querySelector("#content"));
-
-    // load and render the posts from the server
-    loadPostsFromServer(csrf);
-};
-
 var AlertWindow = function AlertWindow(props) {
     return React.createElement(
         "div",

@@ -17,6 +17,11 @@ const postPage = (req, res) => {
   res.render('post', { csrfToken: req.csrfToken() });
 };
 
+//
+const userPostPage = (req, res) => {
+  res.render('userposts', { csrfToken: req.csrfToken() });
+};
+
 // handles adding a post
 const addPost = (req, res) => {
   //  make sure all fields are entered
@@ -61,6 +66,31 @@ const getPosts = (request, response) => {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
+
+    return res.json({ posts: docs, userID: req.session.account._id });
+  });
+};
+
+//
+const userPosts = (request, response) => {
+  const req = request;
+  const res = response;
+
+  let query = req.query.ownerID;
+
+  // if there is no query paramter, use the current users id
+  if (query.length === 0) {
+    query = req.session.account._id;
+  }
+
+  return Post.PostModel.findByOwnerID(query, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    console.log(docs[0].createdBy);
+    console.log(docs.createdBy);
 
     return res.json({ posts: docs, userID: req.session.account._id });
   });
@@ -133,6 +163,8 @@ const updatePost = (request, response) => {
 module.exports.dashPage = dashPage;
 module.exports.addPage = addPage;
 module.exports.getPosts = getPosts;
+module.exports.userPostPage = userPostPage;
+module.exports.userPosts = userPosts;
 module.exports.addPost = addPost;
 module.exports.deletePost = deletePost;
 module.exports.getPost = getPost;

@@ -51,10 +51,18 @@ PostSchema.statics.toAPI = doc => ({
   _id: doc._id,
 });
 
-// find the most recent posts
-PostSchema.statics.findMostRecent = callback => {
-  PostModel.find().sort({ createdDate: -1 }).exec(callback);
+// find posts by owner id
+PostSchema.statics.findByOwnerID = (ownerID, callback) => {
+  const search = {
+    ownerID,
+  };
+
+  return PostModel.find(search).sort({ createdDate: -1 }).exec(callback);
 };
+
+// find the most recent posts
+PostSchema.statics.findMostRecent = callback => PostModel.find().
+  sort({ createdDate: -1 }).exec(callback);
 
 // find posts by document ID
 PostSchema.statics.findByID = (docID, callback) => {
