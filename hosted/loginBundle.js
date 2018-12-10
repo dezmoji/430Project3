@@ -5,7 +5,7 @@ var handleLogin = function handleLogin(e) {
     e.preventDefault();
 
     if ($("#user").val() == '' || $("#pass").val() == '') {
-        handleError("Username or password is empty");
+        handleError("Username, email, or password is empty");
         return false;
     }
 
@@ -18,7 +18,7 @@ var handleLogin = function handleLogin(e) {
 var handleSignup = function handleSignup(e) {
     e.preventDefault();
 
-    if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+    if ($("#email").val() == '' || $("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
         handleError("All fields are required!");
         return false;
     }
@@ -29,6 +29,19 @@ var handleSignup = function handleSignup(e) {
     }
 
     sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
+
+    return false;
+};
+
+var handleForgotPass = function handleForgotPass(e) {
+    e.preventDefault();
+
+    if ($("#email").val() == '' || $("#user").val() == '') {
+        handleError("All fields required.");
+        return false;
+    }
+
+    sendAjax('PUT', $("#forgotForm").attr("action"), $("#forgotForm").serialize(), ReactDOM.render(React.createElement(EmailSentWindow, null), document.querySelector('#content')));
 
     return false;
 };
@@ -69,6 +82,13 @@ var LoginWindow = function LoginWindow(props) {
             "button",
             { className: "btn btn-primary", type: "submit" },
             "Sign In"
+        ),
+        React.createElement(
+            "button",
+            { className: "btn btn-secondary", type: "button", onClick: function onClick(e) {
+                    ReactDOM.render(React.createElement(ForgotPassWindow, { csrf: props.csrf }), document.querySelector("#content"));
+                } },
+            "Forgot Password?"
         )
     );
 };
@@ -89,10 +109,20 @@ var SignupWindow = function SignupWindow(props) {
             { className: "form-group row" },
             React.createElement(
                 "label",
+                { className: "col-sm-2 col-form-label", htmlFor: "email" },
+                "Email: "
+            ),
+            React.createElement("input", { className: "form-control", id: "email", type: "email", name: "email", placeholder: "Email" })
+        ),
+        React.createElement(
+            "div",
+            { className: "form-group row" },
+            React.createElement(
+                "label",
                 { htmlFor: "username" },
                 "Username: "
             ),
-            React.createElement("input", { className: "form-control", id: "user", type: "text", name: "username", placeholder: "username" })
+            React.createElement("input", { className: "form-control", id: "user", type: "text", name: "username", placeholder: "Username" })
         ),
         React.createElement(
             "div",
@@ -102,7 +132,7 @@ var SignupWindow = function SignupWindow(props) {
                 { htmlFor: "pass" },
                 "Password: "
             ),
-            React.createElement("input", { className: "form-control", id: "pass", type: "password", name: "pass", placeholder: "password" })
+            React.createElement("input", { className: "form-control", id: "pass", type: "password", name: "pass", placeholder: "Password" })
         ),
         React.createElement(
             "div",
@@ -112,7 +142,7 @@ var SignupWindow = function SignupWindow(props) {
                 { htmlFor: "pass2" },
                 "Password: "
             ),
-            React.createElement("input", { className: "form-control", id: "pass2", type: "password", name: "pass2", placeholder: "retype password" })
+            React.createElement("input", { className: "form-control", id: "pass2", type: "password", name: "pass2", placeholder: "Retype password" })
         ),
         React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
         React.createElement(
@@ -120,6 +150,68 @@ var SignupWindow = function SignupWindow(props) {
             { className: "btn btn-primary", type: "submit" },
             "Sign Up"
         )
+    );
+};
+
+// React view for forgot password window
+var ForgotPassWindow = function ForgotPassWindow(props) {
+    return React.createElement(
+        "div",
+        null,
+        React.createElement(
+            "h3",
+            null,
+            "Forgot Password?"
+        ),
+        React.createElement(
+            "p",
+            null,
+            "Enter your username and email to be sent a new password. It is strongly recommended that you change your password to something you will remember after logging in."
+        ),
+        React.createElement(
+            "form",
+            { id: "forgotForm",
+                name: "forgotForm",
+                onSubmit: handleForgotPass,
+                action: "/forgotPass",
+                method: "PUT",
+                className: "mainForm"
+            },
+            React.createElement(
+                "div",
+                { className: "form-group row" },
+                React.createElement(
+                    "label",
+                    { htmlFor: "username" },
+                    "Username: "
+                ),
+                React.createElement("input", { className: "form-control", id: "user", type: "text", name: "username", placeholder: "Username" })
+            ),
+            React.createElement(
+                "div",
+                { className: "form-group row" },
+                React.createElement(
+                    "label",
+                    { className: "col-sm-2 col-form-label", htmlFor: "email" },
+                    "Email: "
+                ),
+                React.createElement("input", { className: "form-control", id: "email", type: "email", name: "email", placeholder: "Email" })
+            ),
+            React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+            React.createElement(
+                "button",
+                { className: "btn btn-primary", type: "submit" },
+                "Send Password"
+            )
+        )
+    );
+};
+
+var EmailSentWindow = function EmailSentWindow() {
+    return React.createElement(
+        "p",
+        null,
+        "You will recieve an email shortly if the username and email combination was correct."
     );
 };
 

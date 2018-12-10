@@ -79,12 +79,12 @@ const userPosts = (request, response) => {
   let query = req.query.ownerID;
 
   // if there is no query paramter, use the current users id
-  if (query.length === 0) {
+  if (!query) {
     query = req.session.account._id;
   }
 
   return Post.PostModel.findByOwnerID(query, (err, docs) => {
-    if (err) {
+    if (err || !docs) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }

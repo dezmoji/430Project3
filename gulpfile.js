@@ -82,6 +82,16 @@ gulp.task('userpostsBundle', () => {
     .pipe(gulp.dest('./hosted'))
 });
 
+gulp.task('accountBundle', () => {
+  gulp.src(['./client/app/account.js',
+            './client/helper/helper.js'])
+    .pipe(concat('accountBundle.js'))
+    .pipe(babel({
+      presets: ['env', 'react']
+    }))
+    .pipe(gulp.dest('./hosted'))
+});
+
 gulp.task('lint', () => {
   return gulp.src(['./server/*.js'])
     .pipe(eslint())
@@ -98,6 +108,7 @@ gulp.task('watch',() => {
   gulp.watch(['./client/app/pass.js', './client/helper/helper.js'],['passBundle']);
   gulp.watch(['./client/app/users.js', './client/helper/helper.js'],['userBundle']);
   gulp.watch(['./client/app/userposts.js', './client/helper/helper.js'],['userpostsBundle']);
+  gulp.watch(['./client/app/account.js', './client/helper/helper.js'],['accountBundle']);
   nodemon({ script: './server/app.js'
           , ext: 'js'
           , tasks: ['lint'] })
@@ -112,5 +123,6 @@ gulp.task('build', () => {
   gulp.start('passBundle');
   gulp.start('userBundle');
   gulp.start('userpostsBundle');
+  gulp.start('accountBundle');
   gulp.start('lint');
 });

@@ -3,7 +3,7 @@ const handleLogin = (e) => {
     e.preventDefault();
 
     if($("#user").val() == '' || $("#pass").val() == '') {
-        handleError("Username or password is empty");
+        handleError("Username, email, or password is empty");
         return false;
     }
     
@@ -16,7 +16,7 @@ const handleLogin = (e) => {
 const handleSignup = (e) => {
     e.preventDefault();
 
-    if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+    if($("#email").val() == '' || $("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
         handleError("All fields are required!");
         return false;
     }
@@ -27,6 +27,22 @@ const handleSignup = (e) => {
     }
 
     sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
+
+    return false;
+};
+
+const handleForgotPass = (e) =>{
+    e.preventDefault();
+
+    if($("#email").val() == '' || $("#user").val() == ''){
+        handleError("All fields required.")
+        return false;
+    }
+
+    sendAjax('PUT', $("#forgotForm").attr("action"), $("#forgotForm").serialize(),
+        ReactDOM.render(
+            <EmailSentWindow />, document.querySelector('#content')
+    ));
 
     return false;
 };
@@ -51,6 +67,12 @@ const LoginWindow = (props) => {
             </div>
             <input type="hidden" name="_csrf" value={props.csrf}/>
             <button className="btn btn-primary" type="submit">Sign In</button>
+            <button className="btn btn-secondary" type="button" onClick={(e) =>{
+                ReactDOM.render(
+                    <ForgotPassWindow csrf={props.csrf} />,
+                    document.querySelector("#content")
+                 );
+            }}>Forgot Password?</button>
         </form>
     );
 };
@@ -66,21 +88,59 @@ const SignupWindow = (props) => {
             className="mainForm"
         >
             <div className="form-group row">
+                <label className="col-sm-2 col-form-label" htmlFor="email">Email: </label>
+                <input className="form-control" id="email" type="email" name="email" placeholder="Email"/>
+            </div>
+            <div className="form-group row">
                 <label htmlFor="username">Username: </label>
-                <input className="form-control" id="user" type="text" name="username" placeholder="username"/>
+                <input className="form-control" id="user" type="text" name="username" placeholder="Username"/>
             </div>
             <div className="form-group row">
                 <label htmlFor="pass">Password: </label>
-                <input className="form-control" id="pass" type="password" name="pass" placeholder="password"/>
+                <input className="form-control" id="pass" type="password" name="pass" placeholder="Password"/>
             </div>
             <div className="form-group row">
                 <label htmlFor="pass2">Password: </label>
-                <input className="form-control" id="pass2" type="password" name="pass2" placeholder="retype password"/>
+                <input className="form-control" id="pass2" type="password" name="pass2" placeholder="Retype password"/>
             </div>
             <input type="hidden" name="_csrf" value={props.csrf}/>
             <button className="btn btn-primary" type="submit">Sign Up</button>
         </form>
     );
+};
+
+// React view for forgot password window
+const ForgotPassWindow = (props) => {
+    return (
+        <div> 
+            <h3>Forgot Password?</h3>
+            <p>Enter your username and email to be sent a new password. It is strongly recommended that you change your password to something you will remember after logging in.</p>
+            <form id="forgotForm" 
+                name="forgotForm" 
+                onSubmit={handleForgotPass} 
+                action="/forgotPass" 
+                method="PUT" 
+                className="mainForm"
+            >
+                <div className="form-group row">
+                    <label htmlFor="username">Username: </label>
+                    <input className="form-control" id="user" type="text" name="username" placeholder="Username"/>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label" htmlFor="email">Email: </label>
+                    <input className="form-control" id="email" type="email" name="email" placeholder="Email"/>
+                </div>
+                <input type="hidden" name="_csrf" value={props.csrf}/>
+                <button className="btn btn-primary" type="submit">Send Password</button>
+            </form>
+        </div>
+    );
+};
+
+const EmailSentWindow = () =>{
+    return(
+        <p>You will recieve an email shortly if the username and email combination was correct.</p>
+    )
 };
 
 // render React view for login window

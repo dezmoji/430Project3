@@ -17,6 +17,13 @@ const AccountSchema = new mongoose.Schema({
     match: /^[A-Za-z0-9_\-.]{1,16}$/,
   },
 
+  email: {
+    type: String,
+    required: false,
+    trim: true,
+    unique: true,
+  },
+
   about: {
     type: String,
     required: false,
@@ -31,6 +38,7 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   createdDate: {
     type: Date,
     default: Date.now,
@@ -40,6 +48,7 @@ const AccountSchema = new mongoose.Schema({
 // format how data is sent to the client
 AccountSchema.statics.toAPI = doc => ({
   username: doc.username,
+  email: doc.email,
   about: doc.about,
   _id: doc._id,
 });
@@ -95,13 +104,33 @@ AccountModel.findByUsername(username, (err, doc) => {
 });
 
 // update post using docID
-AccountSchema.statics.updateAccountByID = (id, doc, callback) => {
+AccountSchema.statics.updatePasswordByID = (id, doc, callback) => {
   const search = {
     _id: id,
   };
 
   return AccountModel.findOneAndUpdate(search,
     { salt: doc.salt, password: doc.password }, callback);
+};
+
+// update
+AccountSchema.statics.updateAccount = (username, doc, callback) => {
+  const search = {
+    username,
+  };
+
+  return AccountModel.findOneAndUpdate(search,
+    { about: doc.about }, callback);
+};
+
+//
+AccountSchema.statics.confirmUser = (username, email, callback) => {
+  const search = {
+    username,
+    email,
+  };
+
+  return AccountModel.findOne(search).exec(callback);
 };
 
 AccountModel = mongoose.model('Account', AccountSchema);

@@ -38,8 +38,6 @@ const setup = (csrf) =>{
     // get query from the url and remove the "?"
     const query = window.location.search.slice(1,);
 
-    console.log('hit');
-
     sendAjax('GET', '/getUserPosts', query, (data) =>{
         ReactDOM.render(
             <UserPosts posts={data.posts} csrf={csrf} createdBy={data.createdBy}/>, document.querySelector("#content")

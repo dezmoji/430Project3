@@ -1,4 +1,21 @@
 const models = require('../models');
+const nodemailer = require('nodemailer');
+const generator = require('generate-password');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'fumblr.app@gmail.com',
+    pass: 'FumblrPass1',
+  },
+});
+
+const mailOptions = (recipient, password) => ({
+  from: 'fumblr.app@gmail.com',
+  to: recipient,
+  subject: 'Fumblr Password Recovery',
+  text: `Your new password is: ${password}`,
+});
 
 const Account = models.Account;
 
@@ -15,6 +32,11 @@ const passPage = (req, res) => {
 // renders the user handlebar view
 const userPage = (req, res) => {
   res.render('user', { csrfToken: req.csrfToken() });
+};
+
+//
+const accountPage = (req, res) => {
+  res.render('account', { csrfToken: req.csrfToken() });
 };
 
 // destroy the current session and go to login page
@@ -59,11 +81,13 @@ const signup = (request, response) => {
 
     // cast to strings to cover up some security flaws
   req.body.username = `${req.body.username}`;
+  req.body.email = `${req.body.email}`;
   req.body.pass = `${req.body.pass}`;
   req.body.pass2 = `${req.body.pass2}`;
 
   // make sure all fields are entered
-  if (!req.body.username || !req.body.pass || !req.body.pass2) {
+  if (!req.body.email || !req.body.username ||
+    !req.body.pass || !req.body.pass2 || !req.body.email) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
@@ -77,6 +101,7 @@ const signup = (request, response) => {
     // save and create the new account
     const accountData = {
       username: req.body.username,
+      email: req.body.email,
       salt,
       password: hash,
     };
@@ -95,7 +120,7 @@ const signup = (request, response) => {
       console.log(err);
 
       if (err.code === 11000) {
-        return res.status(400).json({ error: 'Username already in use' });
+        return res.status(400).json({ error: 'Username or email already in use' });
       }
 
       return res.status(400).json({ error: 'An error occured' });
@@ -129,7 +154,7 @@ const changePassword = (request, response) => {
         password: hash,
       };
 
-      return Account.AccountModel.updateAccountByID(req.session.account._id,
+      return Account.AccountModel.updatePasswordByID(req.session.account._id,
       updatedData, (err2, doc2) => {
         if (err2 || !doc2) return res.status(400).json({ error: 'An error occured' });
         return res.status(204).json();
@@ -139,16 +164,86 @@ const changePassword = (request, response) => {
 };
 
 //
+const forgotPassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+  req.body.username = `${req.body.username}`;
+  req.body.email = `${req.body.email}`;
+
+  return Account.AccountModel.confirmUser(req.body.username, req.body.email,
+    (err, doc) => {
+      if (err || !doc) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+
+      const pass = generator.generate({
+        length: 12,
+        numbers: true,
+      });
+
+      return transporter.sendMail(mailOptions(req.body.email, pass), (err2, info) => {
+        if (err2 || !info) {
+          console.log(err2);
+          return res.status(400).json({ error: 'An error occured there' });
+        }
+
+        // generate a new hash and salt
+        return Account.AccountModel.generateHash(pass, (salt, hash) => {
+          //  create updatedData
+          const updatedData = {
+            salt,
+            password: hash,
+          };
+          console.log(doc);
+          console.log(doc._id);
+          console.log(doc.id);
+
+          return Account.AccountModel.updatePasswordByID(doc._id,
+            updatedData, (err3, doc2) => {
+              if (err3 || !doc2) {
+                console.log(err3);
+                return res.status(400).json({ error: 'An error occured here' });
+              }
+              return res.status(204).json();
+            });
+        });
+      });
+    });
+};
+
+//
 const getUser = (request, response) => {
   const req = request;
   const res = response;
 
-  return Account.AccountModel.findByUsername(req.query.user, (err, doc) => {
+  let query = req.query.user || null;
+  if (req.path === '/getAccount') query = req.session.account.username;
+
+  return Account.AccountModel.findByUsername(query, (err, doc) => {
     if (err) {
       return res.status(400).json({ error: 'An error occured' });
     }
 
-    return res.json({ user: doc, userID: req.session.account._id });
+    return res.json({ user: doc });
+  });
+};
+
+//
+const updateAccount = (request, response) => {
+  const req = request;
+  const res = response;
+
+  const updatedData = {
+    about: req.body.about,
+  };
+
+  return Account.AccountModel.updateAccount(req.body.username, updatedData,
+  (err, doc) => {
+    if (err || !doc) return res.status(400).json({ error: 'An error occured' });
+
+    return res.status(200).json({ redirect: '/account' });
   });
 };
 
@@ -167,8 +262,11 @@ const getToken = (request, response) => {
 module.exports.loginPage = loginPage;
 module.exports.passPage = passPage;
 module.exports.userPage = userPage;
+module.exports.accountPage = accountPage;
 module.exports.login = login;
 module.exports.changePass = changePassword;
+module.exports.forgotPass = forgotPassword;
+module.exports.updateAccount = updateAccount;
 module.exports.getUser = getUser;
 module.exports.logout = logout;
 module.exports.signup = signup;

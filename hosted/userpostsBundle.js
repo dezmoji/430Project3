@@ -71,8 +71,6 @@ var setup = function setup(csrf) {
     // get query from the url and remove the "?"
     var query = window.location.search.slice(1);
 
-    console.log('hit');
-
     sendAjax('GET', '/getUserPosts', query, function (data) {
         ReactDOM.render(React.createElement(UserPosts, { posts: data.posts, csrf: csrf, createdBy: data.createdBy }), document.querySelector("#content"));
     });
