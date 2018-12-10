@@ -82,6 +82,7 @@ var setup = function setup(csrf) {
     loadPostsFromServer(csrf);
 };
 
+// React view for the alert 
 var AlertWindow = function AlertWindow(props) {
     return React.createElement(
         "div",
@@ -105,6 +106,7 @@ var AlertWindow = function AlertWindow(props) {
     );
 };
 
+// handles errors by showing an alert with a message
 var handleError = function handleError(message) {
     ReactDOM.render(React.createElement(AlertWindow, { message: message }), document.querySelector("#error"));
     return false;

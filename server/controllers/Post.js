@@ -17,7 +17,7 @@ const postPage = (req, res) => {
   res.render('post', { csrfToken: req.csrfToken() });
 };
 
-//
+// renders the userPost handlebar view
 const userPostPage = (req, res) => {
   res.render('userposts', { csrfToken: req.csrfToken() });
 };
@@ -71,7 +71,7 @@ const getPosts = (request, response) => {
   });
 };
 
-//
+// get a specific users posts
 const userPosts = (request, response) => {
   const req = request;
   const res = response;

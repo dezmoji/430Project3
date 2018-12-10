@@ -14,7 +14,7 @@ const UserInfo = (props) =>{
     );
 };
 
-// 
+// required setup function
 const setup = (csrf) =>{
     // get query from the url and remove the "?"
     const query = window.location.search.slice(1,);

@@ -31,6 +31,7 @@ const handleSignup = (e) => {
     return false;
 };
 
+// handles sending email for forgotten passwords
 const handleForgotPass = (e) =>{
     e.preventDefault();
 
@@ -137,6 +138,7 @@ const ForgotPassWindow = (props) => {
     );
 };
 
+// React view for after the email is sent
 const EmailSentWindow = () =>{
     return(
         <p>You will recieve an email shortly if the username and email combination was correct.</p>

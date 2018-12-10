@@ -36,7 +36,7 @@ var UserInfo = function UserInfo(props) {
     );
 };
 
-// 
+// required setup function
 var setup = function setup(csrf) {
     // get query from the url and remove the "?"
     var query = window.location.search.slice(1);
@@ -44,6 +44,7 @@ var setup = function setup(csrf) {
         ReactDOM.render(React.createElement(UserInfo, { user: data.user, csrf: csrf }), document.querySelector("#content"));
     });
 };
+// React view for the alert 
 var AlertWindow = function AlertWindow(props) {
     return React.createElement(
         'div',
@@ -67,6 +68,7 @@ var AlertWindow = function AlertWindow(props) {
     );
 };
 
+// handles errors by showing an alert with a message
 var handleError = function handleError(message) {
     ReactDOM.render(React.createElement(AlertWindow, { message: message }), document.querySelector("#error"));
     return false;

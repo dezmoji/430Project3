@@ -2,6 +2,8 @@ const models = require('../models');
 const nodemailer = require('nodemailer');
 const generator = require('generate-password');
 
+// create a transporter allowing emails to be sent from
+// a gmail account created for the app
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -10,6 +12,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// function to insert data to be mailed
 const mailOptions = (recipient, password) => ({
   from: 'fumblr.app@gmail.com',
   to: recipient,
@@ -34,7 +37,7 @@ const userPage = (req, res) => {
   res.render('user', { csrfToken: req.csrfToken() });
 };
 
-//
+// renders the account handlebar view
 const accountPage = (req, res) => {
   res.render('account', { csrfToken: req.csrfToken() });
 };
@@ -163,7 +166,7 @@ const changePassword = (request, response) => {
   });
 };
 
-//
+// sends an email if user has forgotten their password
 const forgotPassword = (request, response) => {
   const req = request;
   const res = response;
@@ -171,35 +174,37 @@ const forgotPassword = (request, response) => {
   req.body.username = `${req.body.username}`;
   req.body.email = `${req.body.email}`;
 
+  // first check to see if the username and email combination is a match
   return Account.AccountModel.confirmUser(req.body.username, req.body.email,
     (err, doc) => {
+      // nothing found
       if (err || !doc) {
-        console.log(err);
         return res.status(400).json({ error: 'An error occured' });
       }
 
+      // generate a random alphanumeric password to be sent to the user
       const pass = generator.generate({
         length: 12,
         numbers: true,
       });
 
+      // try to send the email to the user
       return transporter.sendMail(mailOptions(req.body.email, pass), (err2, info) => {
+        // if the email could not be sent
         if (err2 || !info) {
           console.log(err2);
-          return res.status(400).json({ error: 'An error occured there' });
+          return res.status(400).json({ error: 'An error occured. Please try again later' });
         }
 
-        // generate a new hash and salt
+        // generate a new hash and salt using the random password
         return Account.AccountModel.generateHash(pass, (salt, hash) => {
           //  create updatedData
           const updatedData = {
             salt,
             password: hash,
           };
-          console.log(doc);
-          console.log(doc._id);
-          console.log(doc.id);
 
+          // reset the salt and password for the user
           return Account.AccountModel.updatePasswordByID(doc._id,
             updatedData, (err3, doc2) => {
               if (err3 || !doc2) {
@@ -213,12 +218,15 @@ const forgotPassword = (request, response) => {
     });
 };
 
-//
+// returns user information by username
 const getUser = (request, response) => {
   const req = request;
   const res = response;
 
+  // set a query value
   let query = req.query.user || null;
+
+  // if the path is getAccount, then the user is trying to view their own information
   if (req.path === '/getAccount') query = req.session.account.username;
 
   return Account.AccountModel.findByUsername(query, (err, doc) => {
@@ -230,12 +238,13 @@ const getUser = (request, response) => {
   });
 };
 
-//
+// updates email and about section for users
 const updateAccount = (request, response) => {
   const req = request;
   const res = response;
 
   const updatedData = {
+    email: req.body.email,
     about: req.body.about,
   };
 

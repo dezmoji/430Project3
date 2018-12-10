@@ -113,17 +113,17 @@ AccountSchema.statics.updatePasswordByID = (id, doc, callback) => {
     { salt: doc.salt, password: doc.password }, callback);
 };
 
-// update
+// update account email/about
 AccountSchema.statics.updateAccount = (username, doc, callback) => {
   const search = {
     username,
   };
 
   return AccountModel.findOneAndUpdate(search,
-    { about: doc.about }, callback);
+    { email: doc.email, about: doc.about }, callback);
 };
 
-//
+// confirm that a user and email match exists by finding a doc or not
 AccountSchema.statics.confirmUser = (username, email, callback) => {
   const search = {
     username,

@@ -33,6 +33,7 @@ var handleSignup = function handleSignup(e) {
     return false;
 };
 
+// handles sending email for forgotten passwords
 var handleForgotPass = function handleForgotPass(e) {
     e.preventDefault();
 
@@ -207,6 +208,7 @@ var ForgotPassWindow = function ForgotPassWindow(props) {
     );
 };
 
+// React view for after the email is sent
 var EmailSentWindow = function EmailSentWindow() {
     return React.createElement(
         "p",
@@ -247,6 +249,7 @@ var setup = function setup(csrf) {
     createLoginWindow(csrf);
 };
 
+// React view for the alert 
 var AlertWindow = function AlertWindow(props) {
     return React.createElement(
         "div",
@@ -270,6 +273,7 @@ var AlertWindow = function AlertWindow(props) {
     );
 };
 
+// handles errors by showing an alert with a message
 var handleError = function handleError(message) {
     ReactDOM.render(React.createElement(AlertWindow, { message: message }), document.querySelector("#error"));
     return false;

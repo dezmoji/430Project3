@@ -1,20 +1,25 @@
-const handlePost = (e) => {
+// handles request to update account
+const handlePut = (e) => {
     e.preventDefault();
 
     sendAjax('PUT', $("#accountForm").attr("action"), $("#accountForm").serialize(), redirect)
 };
 
+// React view for account form
 const AccountForm = (props) => {
     return(
         <div>
             <form id="accountForm" 
             name="accountForm" 
-            onSubmit={handlePost} 
+            onSubmit={handlePut} 
             action="/editAccount" 
             method="PUT" 
             className="mainForm">
                 <div className="form-group row">
                     Username: <input className="form-control form-control-md form-control-plaintext" readonly id="username" type="text" name="username" defaultValue={props.user.username} placeholder="Username"/>
+                </div>
+                <div className="form-group row">
+                    Email: <input className="form-control form-control-md" id="email" type="email" name="email" defaultValue={props.user.email} placeholder="Email" required/>
                 </div>
                 <div className="form-group row">
                     About: <textarea className="form-control form-control-md" id="about" name="about" rows="10" defaultValue={props.user.about} placeholder="Tell us about yourself"></textarea>
@@ -29,7 +34,7 @@ const AccountForm = (props) => {
     );
 };
 
-
+// required setup function
 const setup = (csrf) =>{
     sendAjax('GET', '/getAccount', null, (data) =>{
         ReactDOM.render(

@@ -1,3 +1,4 @@
+// React view for the alert 
 const AlertWindow = (props) =>{
     return (
         <div className="alert alert-danger alert-dismissible fade show"  id="alert" role="alert">
@@ -9,6 +10,7 @@ const AlertWindow = (props) =>{
     );
 };
 
+// handles errors by showing an alert with a message
 const handleError = (message) =>{
     ReactDOM.render(
         <AlertWindow message={message} />, document.querySelector("#error")

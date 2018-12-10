@@ -1,11 +1,13 @@
 "use strict";
 
-var handlePost = function handlePost(e) {
+// handles request to update account
+var handlePut = function handlePut(e) {
     e.preventDefault();
 
     sendAjax('PUT', $("#accountForm").attr("action"), $("#accountForm").serialize(), redirect);
 };
 
+// React view for account form
 var AccountForm = function AccountForm(props) {
     return React.createElement(
         "div",
@@ -14,7 +16,7 @@ var AccountForm = function AccountForm(props) {
             "form",
             { id: "accountForm",
                 name: "accountForm",
-                onSubmit: handlePost,
+                onSubmit: handlePut,
                 action: "/editAccount",
                 method: "PUT",
                 className: "mainForm" },
@@ -23,6 +25,12 @@ var AccountForm = function AccountForm(props) {
                 { className: "form-group row" },
                 "Username: ",
                 React.createElement("input", { className: "form-control form-control-md form-control-plaintext", readonly: true, id: "username", type: "text", name: "username", defaultValue: props.user.username, placeholder: "Username" })
+            ),
+            React.createElement(
+                "div",
+                { className: "form-group row" },
+                "Email: ",
+                React.createElement("input", { className: "form-control form-control-md", id: "email", type: "email", name: "email", defaultValue: props.user.email, placeholder: "Email", required: true })
             ),
             React.createElement(
                 "div",
@@ -55,11 +63,13 @@ var AccountForm = function AccountForm(props) {
     );
 };
 
+// required setup function
 var setup = function setup(csrf) {
     sendAjax('GET', '/getAccount', null, function (data) {
         ReactDOM.render(React.createElement(AccountForm, { user: data.user, csrf: csrf }), document.querySelector("#content"));
     });
 };
+// React view for the alert 
 var AlertWindow = function AlertWindow(props) {
     return React.createElement(
         "div",
@@ -83,6 +93,7 @@ var AlertWindow = function AlertWindow(props) {
     );
 };
 
+// handles errors by showing an alert with a message
 var handleError = function handleError(message) {
     ReactDOM.render(React.createElement(AlertWindow, { message: message }), document.querySelector("#error"));
     return false;
